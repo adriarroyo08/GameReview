@@ -1,16 +1,18 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { getGames, CHEAPSHARK_BASE_URL } from '../cheapshark';
+import { searchGames } from '../cheapshark';
 
 // Mock global fetch
 const fetchMock = vi.fn();
 global.fetch = fetchMock;
+
+const CHEAPSHARK_BASE_URL = "https://www.cheapshark.com/api/1.0";
 
 describe('cheapshark api', () => {
   beforeEach(() => {
     fetchMock.mockReset();
   });
 
-  it('getGames fetches games with correct url', async () => {
+  it('searchGames fetches games with correct url', async () => {
     const mockGames = [
       {
         gameID: '123',
@@ -24,18 +26,18 @@ describe('cheapshark api', () => {
       json: async () => mockGames,
     });
 
-    const games = await getGames('Batman');
+    const games = await searchGames('Batman');
 
     expect(fetchMock).toHaveBeenCalledWith(`${CHEAPSHARK_BASE_URL}/games?title=Batman`);
     expect(games).toEqual(mockGames);
   });
 
-  it('getGames throws error on failure', async () => {
+  it('searchGames throws error on failure', async () => {
     fetchMock.mockResolvedValueOnce({
       ok: false,
       statusText: 'Internal Server Error'
     });
 
-    await expect(getGames('Batman')).rejects.toThrow('Failed to fetch games: Internal Server Error');
+    await expect(searchGames('Batman')).rejects.toThrow('Failed to search games: Internal Server Error');
   });
 });
