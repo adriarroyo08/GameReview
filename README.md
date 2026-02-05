@@ -32,12 +32,29 @@ Enlace directo a la tienda.
 Sistema de Cache: Implementar un sistema básico (puede ser en memoria o SQLite) para no saturar la API externa en búsquedas repetidas.
 
 5. Roadmap de Implementación (Orden de trabajo para Jules)
-[ ] Fase 1: Configurar el entorno (package.json, tsconfig, etc.).
+[x] Fase 1: Configurar el entorno (package.json, tsconfig, etc.).
 
-[ ] Fase 2: Crear un script de conexión con la API de CheapShark y probar la recuperación de datos en consola.
+[x] Fase 2: Crear un script de conexión con la API de CheapShark y probar la recuperación de datos en consola.
 
 [ ] Fase 3: Diseñar la UI básica (Search Bar + Results Grid).
 
 [ ] Fase 4: Conectar el frontend con la lógica de la API.
 
 [ ] Fase 5: Añadir testing unitario para la lógica de filtrado de precios.
+
+## Development
+
+### Install Dependencies
+```bash
+npm install
+```
+
+### Run Dev Server
+```bash
+npm run dev
+```
+
+### Run Tests
+```bash
+npx vitest run
+```
