@@ -42,30 +42,24 @@ export interface CheapSharkStore {
 
 const BASE_URL = "https://www.cheapshark.com/api/1.0";
 
-export const getStores = async (): Promise<CheapSharkStore[]> => {
-  const response = await fetch(`${BASE_URL}/stores`);
+async function fetchFromApi<T>(endpoint: string): Promise<T> {
+  const response = await fetch(`${BASE_URL}${endpoint}`);
   if (!response.ok) {
-    throw new Error(`Failed to fetch stores: ${response.statusText}`);
+    throw new Error(`Failed to fetch from API: ${response.statusText}`);
   }
   return response.json();
+}
+
+export const getStores = async (): Promise<CheapSharkStore[]> => {
+  return fetchFromApi<CheapSharkStore[]>('/stores');
 };
 
 export const searchGames = async (title: string): Promise<CheapSharkGame[]> => {
-  const response = await fetch(
-    `${BASE_URL}/games?title=${encodeURIComponent(title)}`
-  );
-  if (!response.ok) {
-    throw new Error(`Failed to search games: ${response.statusText}`);
-  }
-  return response.json();
+  return fetchFromApi<CheapSharkGame[]>(`/games?title=${encodeURIComponent(title)}`);
 };
 
 export const getGameDetails = async (
   id: string
 ): Promise<CheapSharkGameDetails> => {
-  const response = await fetch(`${BASE_URL}/games?id=${id}`);
-  if (!response.ok) {
-    throw new Error(`Failed to get game details: ${response.statusText}`);
-  }
-  return response.json();
+  return fetchFromApi<CheapSharkGameDetails>(`/games?id=${id}`);
 };

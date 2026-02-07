@@ -1,83 +1,131 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { getStores, searchGames, getGameDetails } from './cheapshark';
 
-describe('CheapShark Service', () => {
-  const fetchSpy = vi.spyOn(global, 'fetch');
+// Mock fetch globally
+const fetchMock = vi.fn();
+global.fetch = fetchMock;
 
+describe('CheapShark Service', () => {
   beforeEach(() => {
-    fetchSpy.mockReset();
+    fetchMock.mockReset();
   });
 
   afterEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe('getStores', () => {
     it('should fetch stores successfully', async () => {
-      const mockStores = [{ storeID: '1', storeName: 'Steam' }];
-      fetchSpy.mockResolvedValueOnce({
+      const mockStores = [
+        {
+          storeID: '1',
+          storeName: 'Steam',
+          isActive: 1,
+          images: {
+            banner: '/banner.png',
+            logo: '/logo.png',
+            icon: '/icon.png',
+          },
+        },
+      ];
+
+      fetchMock.mockResolvedValueOnce({
         ok: true,
         json: async () => mockStores,
-      } as Response);
+      });
 
-      const result = await getStores();
-      expect(fetchSpy).toHaveBeenCalledWith('https://www.cheapshark.com/api/1.0/stores');
-      expect(result).toEqual(mockStores);
+      const stores = await getStores();
+
+      expect(fetchMock).toHaveBeenCalledWith('https://www.cheapshark.com/api/1.0/stores');
+      expect(stores).toEqual(mockStores);
     });
 
     it('should throw an error if fetch fails', async () => {
-      fetchSpy.mockResolvedValueOnce({
+      fetchMock.mockResolvedValueOnce({
         ok: false,
         statusText: 'Internal Server Error',
-      } as Response);
+      });
 
-      await expect(getStores()).rejects.toThrow('Failed to fetch stores: Internal Server Error');
+      await expect(getStores()).rejects.toThrow('Failed to fetch from API: Internal Server Error');
     });
   });
 
   describe('searchGames', () => {
-    it('should search games with encoded title', async () => {
-      const mockGames = [{ gameID: '1', external: 'Test Game' }];
-      fetchSpy.mockResolvedValueOnce({
+    it('should search for games successfully', async () => {
+      const mockGames = [
+        {
+          gameID: '123',
+          steamAppID: '456',
+          cheapest: '10.00',
+          cheapestDealID: 'deal123',
+          external: 'Test Game',
+          internalName: 'TESTGAME',
+          thumb: '/thumb.png',
+        },
+      ];
+
+      fetchMock.mockResolvedValueOnce({
         ok: true,
         json: async () => mockGames,
-      } as Response);
+      });
 
-      const result = await searchGames('Test Game');
-      expect(fetchSpy).toHaveBeenCalledWith('https://www.cheapshark.com/api/1.0/games?title=Test%20Game');
-      expect(result).toEqual(mockGames);
+      const games = await searchGames('Test Game');
+
+      expect(fetchMock).toHaveBeenCalledWith('https://www.cheapshark.com/api/1.0/games?title=Test%20Game');
+      expect(games).toEqual(mockGames);
     });
 
-    it('should throw an error if search fails', async () => {
-      fetchSpy.mockResolvedValueOnce({
+    it('should throw an error if fetch fails', async () => {
+      fetchMock.mockResolvedValueOnce({
         ok: false,
         statusText: 'Not Found',
-      } as Response);
+      });
 
-      await expect(searchGames('Test')).rejects.toThrow('Failed to search games: Not Found');
+      await expect(searchGames('Test Game')).rejects.toThrow('Failed to fetch from API: Not Found');
     });
   });
 
   describe('getGameDetails', () => {
-    it('should fetch game details', async () => {
-      const mockDetails = { info: { title: 'Test Game' } };
-      fetchSpy.mockResolvedValueOnce({
+    it('should fetch game details successfully', async () => {
+      const mockDetails = {
+        info: {
+          title: 'Test Game',
+          steamAppID: '456',
+          thumb: '/thumb.png',
+        },
+        cheapestPriceEver: {
+          price: '5.00',
+          date: 1600000000,
+        },
+        deals: [
+          {
+            storeID: '1',
+            dealID: 'deal123',
+            price: '10.00',
+            retailPrice: '20.00',
+            savings: '50.000000',
+          },
+        ],
+      };
+
+      fetchMock.mockResolvedValueOnce({
         ok: true,
         json: async () => mockDetails,
-      } as Response);
+      });
 
-      const result = await getGameDetails('123');
-      expect(fetchSpy).toHaveBeenCalledWith('https://www.cheapshark.com/api/1.0/games?id=123');
-      expect(result).toEqual(mockDetails);
+      const details = await getGameDetails('123');
+
+      expect(fetchMock).toHaveBeenCalledWith('https://www.cheapshark.com/api/1.0/games?id=123');
+      expect(details).toEqual(mockDetails);
     });
 
-    it('should throw an error if details fetch fails', async () => {
-      fetchSpy.mockResolvedValueOnce({
+    it('should throw an error if fetch fails', async () => {
+      fetchMock.mockResolvedValueOnce({
         ok: false,
         statusText: 'Bad Request',
-      } as Response);
+      });
 
-      await expect(getGameDetails('123')).rejects.toThrow('Failed to get game details: Bad Request');
+      await expect(getGameDetails('123')).rejects.toThrow('Failed to fetch from API: Bad Request');
     });
   });
 });
