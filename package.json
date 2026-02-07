@@ -6,9 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint",
     "test": "vitest",
-    "test:script": "tsx scripts/test-cheapshark.ts"
+    "test:script": "tsx scripts/verify-api.ts"
   },
   "dependencies": {
     "next": "16.1.6",
@@ -17,18 +17,18 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.2",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^5.1.3",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "jsdom": "^28.0.0",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
     "typescript": "^5",
-    "vitest": "^2.1.8",
-    "@testing-library/react": "^16.1.0",
-    "@testing-library/dom": "^10.4.0",
-    "jsdom": "^25.0.1",
-    "@vitejs/plugin-react": "^4.3.4"
+    "vitest": "^4.0.18"
   }
 }
