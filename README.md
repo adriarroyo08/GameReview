@@ -39,8 +39,12 @@ Sistema de Cache: Implementar un sistema básico (puede ser en memoria o SQLite)
     - Ejecutar script de verificación: `npx tsx scripts/verify-api.ts`
     - Ejecutar tests unitarios: `npm test`
 
-[ ] Fase 3: Diseñar la UI básica (Search Bar + Results Grid).
+[x] Fase 3: Diseñar la UI básica (Search Bar + Results Grid).
+    - Componentes creados: `SearchBar`, `GameCard`, `GameGrid`.
+    - Tests de componentes implementados.
 
-[ ] Fase 4: Conectar el frontend con la lógica de la API.
+[x] Fase 4: Conectar el frontend con la lógica de la API.
+    - Integración realizada en `src/app/page.tsx`.
+    - Tests de integración añadidos en `src/app/page.test.tsx`.
 
 [ ] Fase 5: Añadir testing unitario para la lógica de filtrado de precios.
