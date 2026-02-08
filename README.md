@@ -1,46 +1,124 @@
 # GameReview
-App informativa de videojuegos
+Aplicación de búsqueda y comparación de precios de videojuegos.
 
-1. Visión del Proyecto
-Este repositorio es el punto de partida para una aplicación multiplataforma que permite comparar precios de videojuegos en tiempo real entre distintas tiendas (Steam, Epic Games, GOG, Humble Bundle).
+## 🎮 Características
 
-2. Instrucciones para la IA (Jules)
-Rol: Actúa como Full-Stack Developer Senior. Tarea: Basándote en este README, inicializa el proyecto desde cero. No esperes instrucciones adicionales; toma decisiones de arquitectura basadas en las mejores prácticas actuales.
+- **Búsqueda de videojuegos**: Accede a una base de datos de más de 500,000 juegos de todas las plataformas (PC, PlayStation, Xbox, Nintendo, retro, etc.)
+- **Valoraciones**: Visualiza ratings agregados de usuarios y críticos
+- **Comparación de precios**: Encuentra el mejor precio en tiendas como Steam, GOG, Epic Games, etc.
+- **Historial de precios**: Ve el precio más bajo histórico de cada juego
 
-3. Stack Tecnológico Sugerido
-Jules, eres libre de elegir, pero se recomienda:
+## 🚀 Instalación
 
-Frontend: Next.js (App Router) + Tailwind CSS.
+### 1. Clonar e instalar dependencias
+```bash
+git clone <repo-url>
+cd GameReview
+npm install
+```
 
-Backend: Node.js (integrado en Next.js) o FastAPI si prefieres Python.
+### 2. Configurar credenciales de IGDB (Twitch)
 
-API Externa: Utiliza la API de CheapShark (es gratuita y no requiere API Key compleja para empezar) para obtener los precios.
+Para acceder a la base de datos de juegos, necesitas credenciales de Twitch Developer:
 
-4. Requerimientos Funcionales (MVP)
-Módulo de Búsqueda: Un input donde el usuario escriba el nombre de un juego.
+1. Ve a [Twitch Developer Console](https://dev.twitch.tv/console/apps)
+2. Inicia sesión o crea una cuenta
+3. Crea una nueva aplicación:
+   - **Nombre**: GameReview (o el que prefieras)
+   - **URL de redirección OAuth**: `http://localhost`
+   - **Categoría**: Application Integration
+4. Copia el **Client ID** y genera un **Client Secret**
+5. Crea un archivo `.env.local` en la raíz del proyecto:
 
-Lógica de Comparación: Consultar la API, normalizar los precios a una moneda única (EUR/USD) y ordenarlos de menor a mayor.
+```env
+TWITCH_CLIENT_ID=tu_client_id_aqui
+TWITCH_CLIENT_SECRET=tu_client_secret_aqui
+```
 
-Interfaz de Resultados: Tarjetas de producto que muestren:
+### 3. Ejecutar en desarrollo
+```bash
+npm run dev
+```
 
-Imagen del juego.
+Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 
-Precio actual vs. Precio original.
+## 📦 Scripts disponibles
 
-Enlace directo a la tienda.
+| Comando | Descripción |
+|---------|-------------|
+| `npm run dev` | Inicia el servidor de desarrollo |
+| `npm run build` | Compila para producción |
+| `npm run start` | Inicia servidor de producción |
+| `npm run lint` | Ejecuta ESLint |
+| `npm test` | Ejecuta tests con Vitest |
 
-Sistema de Cache: Implementar un sistema básico (puede ser en memoria o SQLite) para no saturar la API externa en búsquedas repetidas.
+## 🏗️ Stack Tecnológico
 
-5. Roadmap de Implementación (Orden de trabajo para Jules)
-[x] Fase 1: Configurar el entorno (package.json, tsconfig, etc.).
-    - Se ha añadido configuración de testing con Vitest y JSDOM.
+- **Frontend**: Next.js 16 (App Router) + React 19 + TypeScript
+- **Styling**: Tailwind CSS 4
+- **APIs**:
+  - [IGDB](https://api-docs.igdb.com/) - Base de datos de videojuegos (requiere cuenta Twitch)
+  - [CheapShark](https://cheapshark.com/api) - Precios en tiendas digitales (sin API key)
+- **Testing**: Vitest + Testing Library
 
-[x] Fase 2: Crear un script de conexión con la API de CheapShark y probar la recuperación de datos en consola.
-    - Ejecutar script de verificación: `npx tsx scripts/verify-api.ts`
-    - Ejecutar tests unitarios: `npm test`
+## 📁 Estructura del proyecto
 
-[ ] Fase 3: Diseñar la UI básica (Search Bar + Results Grid).
+```
+src/
+├── app/
+│   ├── api/
+│   │   └── games/
+│   │       ├── search/route.ts    # GET /api/games/search?q=...
+│   │       └── [id]/route.ts      # GET /api/games/:id
+│   ├── components/
+│   │   ├── GameCard.tsx           # Tarjeta de juego
+│   │   └── SearchBar.tsx          # Barra de búsqueda
+│   ├── game/
+│   │   └── [id]/page.tsx          # Página de detalle
+│   ├── page.tsx                   # Página principal
+│   └── globals.css                # Estilos globales
+└── services/
+    ├── igdb.ts                    # Servicio IGDB
+    ├── cheapshark.ts              # Servicio CheapShark
+    └── cache.ts                   # Cache en memoria
+```
 
-[ ] Fase 4: Conectar el frontend con la lógica de la API.
+## 🔑 APIs utilizadas
 
-[ ] Fase 5: Añadir testing unitario para la lógica de filtrado de precios.
+### IGDB (Internet Game Database)
+Proporciona información completa sobre videojuegos:
+- Título, descripción, historia
+- Plataformas, géneros
+- Ratings de usuarios y críticos
+- Capturas de pantalla
+- Empresas desarrolladoras/publicadoras
+
+### CheapShark
+Proporciona precios en tiempo real de tiendas digitales:
+- Steam, GOG, Epic Games, Humble Bundle, etc.
+- Precio actual vs precio original
+- Historial de precios
+
+## 🧪 Testing
+
+```bash
+# Ejecutar todos los tests
+npm test
+
+# Ejecutar tests en modo watch
+npm test -- --watch
+
+# Verificar conexión con APIs
+npx tsx scripts/verify-api.ts
+```
+
+## 📝 Roadmap
+
+- [x] Configuración del proyecto
+- [x] Integración con API de CheapShark
+- [x] Integración con API de IGDB
+- [x] UI de búsqueda y resultados
+- [x] Página de detalle del juego
+- [ ] Filtros por plataforma y género
+- [ ] Sistema de favoritos
+- [ ] Alertas de precios
